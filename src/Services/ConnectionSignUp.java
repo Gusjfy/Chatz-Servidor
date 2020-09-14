@@ -13,7 +13,7 @@ public class ConnectionSignUp extends Thread implements ConnectionServer {
 
     Controller controller;
     private Usuario user;
-    Monitor m;
+    Monitor m = new Monitor();
 
     public ConnectionSignUp() throws IOException {
         controller = Controller.getIntance();
@@ -29,6 +29,7 @@ public class ConnectionSignUp extends Thread implements ConnectionServer {
 
         for (Usuario usuario : controller.getListUsuario()) {
             if (usuario.getApelido().equalsIgnoreCase(user.getApelido())) {
+                System.out.println("USUÁRIO JÁ CADASTRADO");
                 return;
             }
         }

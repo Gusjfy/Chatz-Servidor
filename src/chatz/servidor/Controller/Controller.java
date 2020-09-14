@@ -102,7 +102,7 @@ public class Controller extends Thread {
                 System.out.println("Conectado com: " + conn.getInetAddress().getHostName());
                 ObjectInputStream entrada = new ObjectInputStream(conn.getInputStream());
 
-                int code = Integer.parseInt(entrada.readUTF()); //Código de Operação
+                int code = entrada.readInt(); //Código de Operação
 
                 Usuario u; //Usuário solicitante
 
@@ -111,12 +111,18 @@ public class Controller extends Thread {
                 switch (code) {
                     case 1://Cadastro
                         connection = new ConnectionSignUp();
-                        u = (Usuario) entrada.readObject();
+                        u = new Usuario();
+                        u.setApelido(entrada.readUTF());
+                        u.setEmail(entrada.readUTF());
+                        u.setSenha(entrada.readUTF());
+                        u.setDataNascimento(entrada.readUTF());
                         connection.execute(u);
                         break;
                     case 2://Login
                         connection = new ConnectionSignIn();
-                        u = (Usuario) entrada.readObject();
+                        u = new Usuario();
+                        u.setEmail(entrada.readUTF());
+                        u.setSenha(entrada.readUTF());
                         connection.execute(u);
                         ObjectOutputStream saida = new ObjectOutputStream(conn.getOutputStream());
                         saida.writeUTF("login ok");

@@ -11,6 +11,7 @@ public class ConnectionSignIn implements ConnectionServer {
 
     Controller controller;
     private Usuario user;
+    ServiceUsuario serviceUsuario = ServiceUsuario.getIntance();
 
     @Override
     public void execute(Usuario u) {
@@ -19,13 +20,8 @@ public class ConnectionSignIn implements ConnectionServer {
     }
 
     public void verifyData() {
-
-        for (Usuario usuario : controller.getListUsuario()) {
-            if (usuario.getApelido().equalsIgnoreCase(user.getApelido()) && usuario.getSenha().equals(user.getSenha())) {
-                controller.getListUsuarioOnline().add(user);
-            }
-        }
-
+        Usuario logado = serviceUsuario.login(user.getEmail(), user.getSenha());
+        System.out.println("Autenticado: " + logado.getApelido());
     }
 
 }

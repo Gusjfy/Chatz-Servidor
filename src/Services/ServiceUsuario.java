@@ -2,7 +2,11 @@ package Services;
 
 import Model.Usuario;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -11,6 +15,9 @@ import java.sql.SQLException;
 public class ServiceUsuario {
 
     private SQLite db;
+    private Statement statement = null;
+    private PreparedStatement preparedStatement = null;
+    private ResultSet resultSet = null;
 
     private static ServiceUsuario instance = null;
 
@@ -22,39 +29,108 @@ public class ServiceUsuario {
     }
 
     private ServiceUsuario() {
-        db = new SQLite();
+        db = SQLite.getIntance();
+    }
+
+    public Usuario findUsuarioByApelido(String apelido) {
+        db.conectar();
+        Usuario u = new Usuario();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO"
+                + "WHERE APELIDO = " + apelido;
+        statement = db.criarStatement();
+        try {
+            resultSet = statement.executeQuery(sql);
+            u.setId(resultSet.getInt("ID"));
+            u.setApelido(resultSet.getString("APELIDO"));
+            u.setEmail(resultSet.getString("EMAIL"));
+            u.setSenha(resultSet.getString("SENHA"));
+            u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+        } catch (Exception e) {
+            System.err.println("Ocorreu um erro na busca pelo apelido");
+        }
+        db.desconectar();
+        return u;
+    }
+
+    public Usuario login(String email, String senha) {
+        db.conectar();
+        Usuario u = new Usuario();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO "
+                + "WHERE EMAIL = ? "
+                + "AND SENHA = ?;";
+        preparedStatement = db.criarPreparedStatement(sql);
+        try {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, senha);
+            resultSet = preparedStatement.executeQuery();
+            u.setId(resultSet.getInt("ID"));
+            u.setApelido(resultSet.getString("APELIDO"));
+            u.setEmail(resultSet.getString("EMAIL"));
+            u.setSenha(resultSet.getString("SENHA"));
+            u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+            System.out.println("Login realizado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Ocorreu um erro no login");
+        }
+        db.desconectar();
+        return u;
+    }
+
+    public List<Usuario> listUsuarios() {
+        db.conectar();
+        Usuario u;
+        List<Usuario> listUsuario = new ArrayList<>();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO";
+        statement = db.criarStatement();
+        try {
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                u = new Usuario();
+                u.setId(resultSet.getInt("ID"));
+                u.setApelido(resultSet.getString("APELIDO"));
+                u.setEmail(resultSet.getString("EMAIL"));
+                u.setSenha(resultSet.getString("SENHA"));
+                u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+                listUsuario.add(u);
+            }
+        } catch (Exception e) {
+            System.err.println("Ocorreu um erro na listagem de usuarios");
+        }
+        db.desconectar();
+        return listUsuario;
     }
 
     public void createUsuario(Usuario usuario) {
         db.conectar();
+
         String sqlInsert = "INSERT INTO TB_USUARIO ("
-                + "ID,"
                 + "APELIDO,"
                 + "SENHA,"
-                + "EMAIL"
+                + "EMAIL,"
                 + "DATANASCIMENTO"
-                + ") VALUES(?,?,?,?,?)"
+                + ") VALUES(?,?,?,?)"
                 + ";";
 
-            PreparedStatement preparedStatement = db.criarPreparedStatement(sqlInsert);
+        preparedStatement = db.criarPreparedStatement(sqlInsert);
         try {
-
-            preparedStatement.setInt(1, usuario.getId());
-            preparedStatement.setString(2, usuario.getApelido());
-            preparedStatement.setString(3, usuario.getSenha());
-            preparedStatement.setString(4, usuario.getEmail());
-            preparedStatement.setString(5, usuario.getDataNascimento());
+            preparedStatement.setString(1, usuario.getApelido());
+            preparedStatement.setString(2, usuario.getSenha());
+            preparedStatement.setString(3, usuario.getEmail());
+            preparedStatement.setString(4, usuario.getDataNascimento());
 
             int resultado = preparedStatement.executeUpdate();
 
             if (resultado == 1) {
-                System.out.println("Pessoa inserida!");
+                System.out.println("Usuario inserido!");
             } else {
-                System.out.println("Pessoa não inserida! =[");
+                System.err.println("Usuario não inserido! =[");
             }
 
         } catch (SQLException e) {
-            System.out.println("Pessoa não inserida! =[");
+            System.err.println("Usuario não inserido! =[");
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -63,6 +139,34 @@ public class ServiceUsuario {
                 }
             }
             db.desconectar();
+        }
+    }
+
+    public void createUserTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS TB_USUARIO "
+                + "("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "APELIDO TEXT NOT NULL,"
+                + "SENHA TEXT NOT NULL,"
+                + "EMAIL TEXT NOT NULL,"
+                + "DATANASCIMENTO TEXT NOT NULL"
+                + ")";
+        boolean conectou = false;
+        try {
+            conectou = db.conectar();
+
+            Statement stmt = db.criarStatement();
+
+            stmt.execute(sql);
+
+            System.out.println("Tabela Usuario criada!");
+
+        } catch (SQLException e) {
+
+        } finally {
+            if (conectou) {
+                db.desconectar();
+            }
         }
     }
 

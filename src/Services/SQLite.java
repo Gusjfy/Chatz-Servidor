@@ -13,6 +13,18 @@ import java.sql.Statement;
 public class SQLite {
 
     private Connection conection;
+    private static SQLite instance = null;
+
+    public static SQLite getIntance() {
+        if (instance == null) {
+            instance = new SQLite();
+        }
+        return instance;
+    }
+
+    private SQLite() {
+
+    }
 
     public boolean conectar() {
         try {
@@ -56,34 +68,6 @@ public class SQLite {
 
     public Connection getConection() {
         return this.conection;
-    }
-
-    public void createUserTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS TB_USUARIO "
-                + "("
-                + "ID INTEGER PRIMARY KEY,"
-                + "APELIDO TEXT NOT NULL,"
-                + "SENHA TEXT NOT NULL,"
-                + "EMAIL TEXT NOT NULL,"
-                + "DATANASCIMENTO TEXT NOT NULL"
-                + ")";
-        boolean conectou = false;
-        try {
-            conectou = this.conectar();
-
-            Statement stmt = this.criarStatement();
-
-            stmt.execute(sql);
-
-            System.out.println("Tabela Usuario criada!");
-
-        } catch (SQLException e) {
-            //mensagem de erro na criação da tabela
-        } finally {
-            if (conectou) {
-                this.desconectar();
-            }
-        }
     }
 
 }

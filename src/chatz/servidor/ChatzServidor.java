@@ -5,9 +5,9 @@
  */
 package chatz.servidor;
 
-import Model.Usuario;
 import Services.SQLite;
 import Services.ServiceUsuario;
+import Services.ServiceUsuarioContatos;
 import chatz.servidor.Controller.Controller;
 import java.io.IOException;
 
@@ -21,22 +21,19 @@ public class ChatzServidor {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //SQLite sqlite = new SQLite();
-        //sqlite.conectar();
-        //sqlite.desconectar();
-        //sqlite.createUserTable();
-        ServiceUsuario usuService = ServiceUsuario.getIntance();
-        Usuario u = new Usuario();
-        u.setId(10);
-        u.setApelido("Teste");
-        u.setEmail("teste@teste.com");
-        u.setSenha("senha123");
-        u.setDataNascimento("28/06/1999");
-        usuService.createUsuario(u);
+        SQLite db = SQLite.getIntance();
+        db.conectar();
+        db.desconectar();
+        ServiceUsuario usuarioService = ServiceUsuario.getIntance();
+        usuarioService.createUserTable();
 
-//Controller controller = Controller.getIntance();
-        //        controller.setPORT(5555);
-        //        controller.start();
+        ServiceUsuarioContatos usuarioContatoService = ServiceUsuarioContatos.getIntance();
+        usuarioContatoService.createUserContactsTable();
+
+        Controller controller = Controller.getIntance();
+        controller.setPORT(5555);
+        controller.start();
+        
     }
     
 }

@@ -1,6 +1,7 @@
 package chatz.servidor.Controller;
 
 import Model.Usuario;
+import Services.ServiceUsuario;
 
 /**
  *
@@ -10,9 +11,11 @@ public class Monitor {
 
     Controller controller = Controller.getIntance();
 
+    ServiceUsuario usuarioService = ServiceUsuario.getIntance();
+
     public synchronized void UserSignUp(Usuario u) {
-        u.setId(controller.getListUsuario().size() + 1);
         controller.getListUsuario().add(u);
+        usuarioService.createUsuario(u);
 
     }
 
