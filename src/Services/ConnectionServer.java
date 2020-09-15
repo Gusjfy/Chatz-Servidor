@@ -1,6 +1,7 @@
 package Services;
 
 import Model.Usuario;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -8,6 +9,6 @@ import Model.Usuario;
  */
 public interface ConnectionServer {
 
-    void execute(Usuario u);
+    void execute(Usuario u, ObjectOutputStream saida);
 
 }

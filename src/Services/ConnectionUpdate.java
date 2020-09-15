@@ -1,27 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package Services;
 
 import Model.Usuario;
+import chatz.servidor.Controller.Controller;
+import java.io.ObjectOutputStream;
 
 /**
  *
  * @author Leonardo Steinke
  */
-public class ConnectionUpdate implements ConnectionServer{
-
+public class ConnectionUpdate implements ConnectionServer {
+    
+    Controller controller = Controller.getIntance();
+    private Usuario user;
+    ServiceUsuario serviceUsuario = ServiceUsuario.getIntance();
+    private ObjectOutputStream saida;
+    
     @Override
-    public void execute(Usuario u) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void verifyData(Usuario u) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(Usuario usuario, ObjectOutputStream saida) {
+        this.saida = saida;
+        this.user = usuario;
+        verifyData();
     }
     
-
+    public void verifyData() {
+        Usuario u = serviceUsuario.findUsuarioByEmail(user.getEmail());
+        user.setId(u.getId());
+        if (serviceUsuario.updateUsuario(user)) {
+            
+        } else {
+            
+        }
+        
+    }
+    
 }

@@ -11,7 +11,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import Services.ConnectionServer;
 
@@ -23,6 +22,8 @@ public class Controller extends Thread {
 
     List<Usuario> listUsuario = new ArrayList<>();
     List<Usuario> listUsuarioOnline = new ArrayList<>();
+
+    private ObjectOutputStream saida;
 
     private ServerSocket server;
     private int PORT;
@@ -116,28 +117,33 @@ public class Controller extends Thread {
                         u.setEmail(entrada.readUTF());
                         u.setSenha(entrada.readUTF());
                         u.setDataNascimento(entrada.readUTF());
-                        connection.execute(u);
+                        saida = new ObjectOutputStream(conn.getOutputStream());
+                        connection.execute(u, saida);
                         break;
                     case 2://Login
                         connection = new ConnectionSignIn();
                         u = new Usuario();
                         u.setEmail(entrada.readUTF());
                         u.setSenha(entrada.readUTF());
-                        connection.execute(u);
-                        ObjectOutputStream saida = new ObjectOutputStream(conn.getOutputStream());
-                        saida.writeUTF("login ok");
-                        saida.flush();
+                        saida = new ObjectOutputStream(conn.getOutputStream());
+                        connection.execute(u, saida);
                         break;
                     case 3://Atualiza dados
                         connection = new ConnectionUpdate();
-                        u = (Usuario) entrada.readObject();
+                        u = new Usuario();
+                        u.setApelido(entrada.readUTF());
+                        u.setEmail(entrada.readUTF());
+                        u.setSenha(entrada.readUTF());
+                        u.setDataNascimento(entrada.readUTF());
+                        saida = new ObjectOutputStream(conn.getOutputStream());
+                        connection.execute(u, saida);
                         break;
                     case 4://Inicia conexão com outro usuario
                         connection = new ConnectionStartNewChat();
                         break;
                 }
-
                 conn.close();
+                // entrada.close();
             } catch (Exception e) {
 
             }

@@ -6,6 +6,7 @@
 package Services;
 
 import Model.Usuario;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -14,7 +15,7 @@ import Model.Usuario;
 public class ConnectionStartNewChat implements ConnectionServer {
 
     @Override
-    public void execute(Usuario u) {
+    public void execute(Usuario u, ObjectOutputStream saida) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -4,6 +4,7 @@ import Model.Usuario;
 import chatz.servidor.Controller.Controller;
 import chatz.servidor.Controller.Monitor;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -20,7 +21,7 @@ public class ConnectionSignUp extends Thread implements ConnectionServer {
     }
 
     @Override
-    public void execute(Usuario u) {
+    public void execute(Usuario u, ObjectOutputStream saida) {
         this.user = u;
         verifyData();
     }

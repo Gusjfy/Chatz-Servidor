@@ -32,27 +32,6 @@ public class ServiceUsuario {
         db = SQLite.getIntance();
     }
 
-    public Usuario findUsuarioByApelido(String apelido) {
-        db.conectar();
-        Usuario u = new Usuario();
-        String sql = "SELECT * "
-                + "FROM TB_USUARIO"
-                + "WHERE APELIDO = " + apelido;
-        statement = db.criarStatement();
-        try {
-            resultSet = statement.executeQuery(sql);
-            u.setId(resultSet.getInt("ID"));
-            u.setApelido(resultSet.getString("APELIDO"));
-            u.setEmail(resultSet.getString("EMAIL"));
-            u.setSenha(resultSet.getString("SENHA"));
-            u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
-        } catch (Exception e) {
-            System.err.println("Ocorreu um erro na busca pelo apelido");
-        }
-        db.desconectar();
-        return u;
-    }
-
     public Usuario login(String email, String senha) {
         db.conectar();
         Usuario u = new Usuario();
@@ -76,6 +55,67 @@ public class ServiceUsuario {
         }
         db.desconectar();
         return u;
+    }
+
+    public Usuario findUsuarioByEmail(String EMAIL) {
+        db.conectar();
+        Usuario u = new Usuario();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO "
+                + "WHERE LOWER(EMAIL) = LOWER(?);";
+
+        preparedStatement = db.criarPreparedStatement(sql);
+        try {
+            preparedStatement.setString(1, EMAIL);
+            resultSet = preparedStatement.executeQuery();
+            u.setId(resultSet.getInt("ID"));
+            u.setApelido(resultSet.getString("APELIDO"));
+            u.setEmail(resultSet.getString("EMAIL"));
+            u.setSenha(resultSet.getString("SENHA"));
+            u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+        } catch (Exception e) {
+            System.err.println("Ocorreu um erro na busca pelo Email");
+        }
+        db.desconectar();
+        return u;
+    }
+
+    public boolean updateUsuario(Usuario usuario) {
+        db.conectar();
+        String sql = "UPDATE TB_USUARIO "
+                + "SET APELIDO = ?, SENHA = ?, DATANASCIMENTO = ? "
+                + "WHERE ID = ?;";
+
+        preparedStatement = db.criarPreparedStatement(sql);
+
+        try {
+            preparedStatement.setString(1, usuario.getApelido());
+            preparedStatement.setString(2, usuario.getSenha());
+            preparedStatement.setString(3, usuario.getDataNascimento());
+            preparedStatement.setInt(4, usuario.getId());
+
+            int resultado = preparedStatement.executeUpdate();
+
+            if (resultado == 1) {
+                System.out.println("Usuario atualizado!");
+                return true;
+            } else {
+                System.err.println("Usuario não atualizado!");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Usuario não atualizado!");
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                }
+            }
+            db.desconectar();
+        }
+        return true;
     }
 
     public List<Usuario> listUsuarios() {
