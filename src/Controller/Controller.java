@@ -1,4 +1,4 @@
-package chatz.servidor.Controller;
+package Controller;
 
 import Services.ConnectionSignIn;
 import Model.Usuario;
@@ -101,6 +101,7 @@ public class Controller extends Thread {
             System.out.println("Aguardando conexão...");
             try (Socket conn = server.accept();) {
                 System.out.println("Conectado com: " + conn.getInetAddress().getHostName());
+
                 ObjectInputStream entrada = new ObjectInputStream(conn.getInputStream());
 
                 int code = entrada.readInt(); //Código de Operação
@@ -142,6 +143,7 @@ public class Controller extends Thread {
                         connection = new ConnectionStartNewChat();
                         break;
                 }
+
                 conn.close();
                 // entrada.close();
             } catch (Exception e) {

@@ -1,7 +1,7 @@
 package Services;
 
 import Model.Usuario;
-import chatz.servidor.Controller.Controller;
+import Controller.Controller;
 import java.io.ObjectOutputStream;
 
 /**

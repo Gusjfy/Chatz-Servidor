@@ -1,7 +1,7 @@
 package Services;
 
 import Model.Usuario;
-import chatz.servidor.Controller.Controller;
+import Controller.Controller;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;

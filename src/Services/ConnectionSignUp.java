@@ -1,8 +1,8 @@
 package Services;
 
 import Model.Usuario;
-import chatz.servidor.Controller.Controller;
-import chatz.servidor.Controller.Monitor;
+import Controller.Controller;
+import Controller.Monitor;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 

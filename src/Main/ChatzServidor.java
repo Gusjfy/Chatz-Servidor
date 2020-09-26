@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatz.servidor;
+package Main;
 
 import Services.SQLite;
 import Services.ServiceUsuario;
 import Services.ServiceUsuarioContatos;
-import chatz.servidor.Controller.Controller;
+import Controller.Controller;
 import java.io.IOException;
 
 /**

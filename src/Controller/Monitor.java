@@ -1,4 +1,4 @@
-package chatz.servidor.Controller;
+package Controller;
 
 import Model.Usuario;
 import Services.ServiceUsuario;
