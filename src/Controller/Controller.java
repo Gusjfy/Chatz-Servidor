@@ -97,10 +97,11 @@ public class Controller extends Thread {
         this.PORT = PORT;
         server = new ServerSocket(PORT);
     }
+
     public void startKeepAlive() {
         KeepAlive keepAlive = new KeepAlive();
         keepAlive.start();
-        
+
     }
 
     @Override
@@ -109,8 +110,6 @@ public class Controller extends Thread {
         while (true) {
             System.out.println("Aguardando conexão...");
             try (Socket conn = server.accept();) {
-                System.out.println("Conectado com: " + conn.getInetAddress().getHostName());
-
                 ObjectInputStream entrada = new ObjectInputStream(conn.getInputStream());
 
                 int code = entrada.readInt(); //Código de Operação

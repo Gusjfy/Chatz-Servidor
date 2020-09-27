@@ -1,6 +1,5 @@
 package Model;
 
-
 /**
  *
  * @author Leonardo Steinke
@@ -12,13 +11,13 @@ public class Usuario {
     private String senha;
     private String email;
     private String dataNascimento;
-    private boolean online;
+    private int online;
 
-    public boolean isOnline() {
+    public int getOnline() {
         return online;
     }
 
-    public void setOnline(boolean online) {
+    public void setOnline(int online) {
         this.online = online;
     }
 

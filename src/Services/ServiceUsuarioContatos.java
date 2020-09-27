@@ -85,7 +85,6 @@ public class ServiceUsuarioContatos {
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int i = resultSet.getInt("ID_CONTATO");
-                System.out.println(i);
                 userList.add(service.findUsuarioById(i));
             }
 

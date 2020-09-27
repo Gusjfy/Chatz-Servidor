@@ -47,15 +47,15 @@ public class KeepAlive extends Thread {
                         }
 
                     } catch (Exception e) {
-                        System.out.println(user.getApelido());
+                        System.out.println("Usuario " + user.getApelido() + " saiu");
                         controller.getListUsuarioOnline().remove(user);
                         service.updateUsuarioOnline(0, user.getId());
                         break;
 
                     }
 
-                    sleep(1000);
                 }
+                sleep(5000);
 
             } catch (InterruptedException ex) {
                 Logger.getLogger(KeepAlive.class.getName()).log(Level.SEVERE, null, ex);

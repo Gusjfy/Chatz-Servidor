@@ -40,10 +40,10 @@ public class ConnectionListContacts implements ConnectionServer {
     private void listUsers() throws IOException, SQLException {
         List<Usuario> listUser = service.selectUserContacts(u.getId());
         for (Usuario usuario : listUser) {
-            System.out.println(usuario.getApelido());
             saida.writeUTF("true");
             saida.writeInt(usuario.getId());
             saida.writeUTF(usuario.getApelido());
+            saida.writeInt(usuario.getOnline());
         }
         saida.flush();
     }
