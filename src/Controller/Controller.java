@@ -6,6 +6,7 @@ import Model.Usuario;
 import Services.ConnectionSignUp;
 import Services.ConnectionStartNewChat;
 import Services.ConnectionUpdate;
+import Services.ConnectionAddContact;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -144,6 +145,12 @@ public class Controller extends Thread {
                         connection = new ConnectionStartNewChat();
                         break;
                     case 5: //Adicionar Contato
+                        connection = new ConnectionAddContact();
+                        u = new Usuario();
+                        u.setId(entrada.readInt());
+                        u.setEmail(entrada.readUTF());
+                        saida = new ObjectOutputStream(conn.getOutputStream());
+                        connection.execute(u, saida);
                         break;
                     case 6: //Get Lista de contatos
                         connection = new ConnectionListContacts();

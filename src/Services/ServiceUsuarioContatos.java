@@ -79,10 +79,11 @@ public class ServiceUsuarioContatos {
         List<Usuario> userList = new ArrayList<>();
         statement = db.criarStatement();
         try {
-           // preparedStatement.setInt(1, id);
+            preparedStatement.setInt(1, id);
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int i = resultSet.getInt("ID_CONTATO");
+                System.out.println(i);
                 userList.add(service.findUsuarioById(i));
             }
 
@@ -111,6 +112,33 @@ public class ServiceUsuarioContatos {
             System.out.println("Tabela UsuarioContato criada!");
 
         } catch (SQLException e) {
+        } finally {
+            if (conectou) {
+                db.desconectar();
+            }
+        }
+    }
+    
+    public boolean addContact(int idUsuario, int idContato) {
+        db.conectar();
+        String sql = "INSERT INTO TB_USUARIO_CONTATO ("
+                + "ID_USUARIO, "
+                + "ID_CONTATO ) "
+                + "VALUES ("
+                + idUsuario + ", "
+                + idContato + " );";
+        boolean conectou = false;
+        try {
+            conectou = db.conectar();
+
+            Statement stmt = db.criarStatement();
+
+            stmt.execute(sql);
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         } finally {
             if (conectou) {
                 db.desconectar();
