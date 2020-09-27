@@ -77,10 +77,7 @@ public class ServiceUsuario {
         try {
             preparedStatement.setInt(1, value);
             preparedStatement.setInt(2, id);
-
             preparedStatement.executeUpdate();
-
-            System.out.println("USUARIO LOGADO");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

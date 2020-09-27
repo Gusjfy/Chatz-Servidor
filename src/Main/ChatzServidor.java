@@ -33,7 +33,8 @@ public class ChatzServidor {
         Controller controller = Controller.getIntance();
         controller.setPORT(5555);
         controller.start();
-        
+        controller.startKeepAlive();
+
     }
-    
+
 }

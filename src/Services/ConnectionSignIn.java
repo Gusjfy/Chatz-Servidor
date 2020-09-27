@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class ConnectionSignIn implements ConnectionServer {
 
-    Controller controller;
+    Controller controller = Controller.getIntance();
     private Usuario user;
     ServiceUsuario serviceUsuario = ServiceUsuario.getIntance();
     private ObjectOutputStream saida;
@@ -36,9 +36,9 @@ public class ConnectionSignIn implements ConnectionServer {
     public void verifyData() throws IOException, SQLException {
         Usuario logado = serviceUsuario.login(user.getEmail(), user.getSenha());
         serviceUsuario.updateUsuarioOnline(1, logado.getId());
+        controller.getListUsuarioOnline().add(logado);
 
         if (logado.getEmail() != null) {
-            System.out.println("Autenticado: " + logado.getApelido());
             saida.writeUTF("true");
             saida.writeInt(logado.getId());
             saida.writeUTF(logado.getApelido());
