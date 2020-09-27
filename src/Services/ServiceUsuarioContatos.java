@@ -2,6 +2,8 @@ package Services;
 
 import Model.Usuario;
 import Model.UsuarioContatos;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,15 +73,15 @@ public class ServiceUsuarioContatos {
     }
 
     public List<Usuario> selectUserContacts(int id) throws SQLException {
-        db.conectar();
+        Connection conn = db.getConection();
+        conn = DriverManager.getConnection("jdbc:sqlite:banco/banco_sqlite.db");
         String sql = "SELECT * "
                 + "FROM TB_USUARIO_CONTATO "
                 + "WHERE ID_USUARIO = "+id;
         ServiceUsuario service = ServiceUsuario.getIntance();
         List<Usuario> userList = new ArrayList<>();
-        statement = db.criarStatement();
+        statement = conn.createStatement();
         try {
-            preparedStatement.setInt(1, id);
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int i = resultSet.getInt("ID_CONTATO");
