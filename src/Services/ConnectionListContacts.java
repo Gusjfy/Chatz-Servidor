@@ -44,6 +44,7 @@ public class ConnectionListContacts implements ConnectionServer {
             saida.writeInt(usuario.getId());
             saida.writeUTF(usuario.getApelido());
             saida.writeInt(usuario.getOnline());
+            System.out.println(usuario.getApelido() + "  ->  " + (usuario.getOnline() == 1 ? "online" : "offline"));
         }
         saida.flush();
     }

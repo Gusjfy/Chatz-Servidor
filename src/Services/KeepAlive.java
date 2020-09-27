@@ -42,9 +42,9 @@ public class KeepAlive extends Thread {
                         ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
                         String line;
                         line = entrada.readUTF();
-                        if (line.equalsIgnoreCase("true")) {
-                            System.out.println("Usuario " + user.getApelido() + " = " + line);
-                        }
+//                        if (line.equalsIgnoreCase("true")) {
+//                            System.out.println("Usuario " + user.getApelido() + " = " + line);
+//                        }
 
                     } catch (Exception e) {
                         System.out.println("Usuario " + user.getApelido() + " saiu");

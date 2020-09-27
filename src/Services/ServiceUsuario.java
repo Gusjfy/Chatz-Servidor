@@ -131,6 +131,7 @@ public class ServiceUsuario {
             u.setEmail(resultSet.getString("EMAIL"));
             u.setSenha(resultSet.getString("SENHA"));
             u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+            u.setOnline(resultSet.getInt("ONLINE"));
         } catch (Exception e) {
             System.err.println("Ocorreu um erro na busca pelo Email");
         }
