@@ -1,9 +1,13 @@
 package Services;
 
+import Model.Usuario;
 import Model.UsuarioContatos;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,6 +16,10 @@ import java.sql.Statement;
 public class ServiceUsuarioContatos {
 
     private SQLite db;
+
+    private Statement statement = null;
+    private PreparedStatement preparedStatement = null;
+    private ResultSet resultSet = null;
 
     private static ServiceUsuarioContatos instance = null;
 
@@ -44,7 +52,7 @@ public class ServiceUsuarioContatos {
             int resultado = preparedStatement.executeUpdate();
 
             if (resultado == 1) {
-                System.out.println("Contato inseridp!");
+                System.out.println("Contato inserido!");
             } else {
                 System.out.println("Contato não inserido! =[");
             }
@@ -60,6 +68,30 @@ public class ServiceUsuarioContatos {
             }
             db.desconectar();
         }
+    }
+
+    public List<Usuario> selectUserContacts(int id) throws SQLException {
+        db.conectar();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO_CONTATO "
+                + "WHERE ID_USUARIO = "+id;
+        ServiceUsuario service = ServiceUsuario.getIntance();
+        List<Usuario> userList = new ArrayList<>();
+        statement = db.criarStatement();
+        try {
+           // preparedStatement.setInt(1, id);
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                int i = resultSet.getInt("ID_CONTATO");
+                userList.add(service.findUsuarioById(i));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        resultSet.close();
+        db.desconectar();
+        return userList;
     }
 
     public void createUserContactsTable() {
@@ -79,7 +111,6 @@ public class ServiceUsuarioContatos {
             System.out.println("Tabela UsuarioContato criada!");
 
         } catch (SQLException e) {
-            //mensagem de erro na criação da tabela
         } finally {
             if (conectou) {
                 db.desconectar();

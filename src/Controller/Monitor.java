@@ -14,7 +14,7 @@ public class Monitor {
     ServiceUsuario usuarioService = ServiceUsuario.getIntance();
 
     public synchronized void UserSignUp(Usuario u) {
-        controller.getListUsuario().add(u);
+        
         usuarioService.createUsuario(u);
 
     }

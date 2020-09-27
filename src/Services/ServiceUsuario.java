@@ -32,7 +32,7 @@ public class ServiceUsuario {
         db = SQLite.getIntance();
     }
 
-    public Usuario login(String email, String senha) {
+    public Usuario login(String email, String senha) throws SQLException {
         db.conectar();
         Usuario u = new Usuario();
         String sql = "SELECT * "
@@ -49,17 +49,53 @@ public class ServiceUsuario {
             u.setEmail(resultSet.getString("EMAIL"));
             u.setSenha(resultSet.getString("SENHA"));
             u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
-            System.out.println("Login realizado com sucesso!");
+
         } catch (Exception e) {
-            System.err.println("Ocorreu um erro no login");
+            System.err.println("Ocorreu um erro");
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                }
+            }
+            resultSet.close();
+            db.desconectar();
+
         }
-        db.desconectar();
         return u;
+    }
+
+    public void updateUsuarioOnline(int value, int id) {
+        db.conectar();
+
+        String sql = "UPDATE TB_USUARIO "
+                + "SET ONLINE = ? "
+                + "WHERE ID = ?;";
+        preparedStatement = db.criarPreparedStatement(sql);
+
+        try {
+            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+
+            System.out.println("USUARIO LOGADO");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                }
+            }
+            db.desconectar();
+        }
     }
 
     public Usuario findUsuarioByEmail(String EMAIL) {
         db.conectar();
-        Usuario u = new Usuario();
         String sql = "SELECT * "
                 + "FROM TB_USUARIO "
                 + "WHERE LOWER(EMAIL) = LOWER(?);";
@@ -67,6 +103,31 @@ public class ServiceUsuario {
         preparedStatement = db.criarPreparedStatement(sql);
         try {
             preparedStatement.setString(1, EMAIL);
+            resultSet = preparedStatement.executeQuery();
+            Usuario u = new Usuario();
+            u.setId(resultSet.getInt("ID"));
+            u.setApelido(resultSet.getString("APELIDO"));
+            u.setEmail(resultSet.getString("EMAIL"));
+            u.setSenha(resultSet.getString("SENHA"));
+            u.setDataNascimento(resultSet.getString("DATANASCIMENTO"));
+            return u;
+        } catch (Exception e) {
+            System.err.println("Ocorreu um erro na busca pelo Email");
+        }
+        db.desconectar();
+        return null;
+    }
+
+    public Usuario findUsuarioById(int id) {
+        db.conectar();
+        Usuario u = new Usuario();
+        String sql = "SELECT * "
+                + "FROM TB_USUARIO "
+                + "WHERE ID = ?;";
+
+        preparedStatement = db.criarPreparedStatement(sql);
+        try {
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             u.setId(resultSet.getInt("ID"));
             u.setApelido(resultSet.getString("APELIDO"));
@@ -189,7 +250,8 @@ public class ServiceUsuario {
                 + "APELIDO TEXT NOT NULL,"
                 + "SENHA TEXT NOT NULL,"
                 + "EMAIL TEXT NOT NULL,"
-                + "DATANASCIMENTO TEXT NOT NULL"
+                + "DATANASCIMENTO TEXT NOT NULL,"
+                + "ONLINE INTEGER DEFAULT 0"
                 + ")";
         boolean conectou = false;
         try {

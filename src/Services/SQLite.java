@@ -29,7 +29,6 @@ public class SQLite {
     public boolean conectar() {
         try {
             String url = "jdbc:sqlite:banco/banco_sqlite.db";
-
             this.conection = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.err.println(e.getMessage());

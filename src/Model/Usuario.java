@@ -1,6 +1,5 @@
 package Model;
 
-import java.util.Date;
 
 /**
  *
@@ -13,6 +12,15 @@ public class Usuario {
     private String senha;
     private String email;
     private String dataNascimento;
+    private boolean online;
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     public Usuario() {
     }

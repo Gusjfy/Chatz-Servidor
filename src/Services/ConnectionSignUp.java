@@ -5,6 +5,8 @@ import Controller.Controller;
 import Controller.Monitor;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,6 +17,8 @@ public class ConnectionSignUp extends Thread implements ConnectionServer {
     Controller controller;
     private Usuario user;
     Monitor m = new Monitor();
+    ServiceUsuario serviceUsuario = ServiceUsuario.getIntance();
+    ObjectOutputStream saida;
 
     public ConnectionSignUp() throws IOException {
         controller = Controller.getIntance();
@@ -22,18 +26,29 @@ public class ConnectionSignUp extends Thread implements ConnectionServer {
 
     @Override
     public void execute(Usuario u, ObjectOutputStream saida) {
+        this.saida = saida;
         this.user = u;
-        verifyData();
+        try {
+            verifyData();
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionSignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void verifyData() {
+    private void verifyData() throws IOException {
+        Usuario u = serviceUsuario.findUsuarioByEmail(user.getEmail().toLowerCase());
+        if (u != null) {
+            System.out.println("E-MAIL JÁ CADASTRADO");
+            saida.writeUTF("E-Mail já cadastrado");
+            saida.flush();
+            return;
 
-        for (Usuario usuario : controller.getListUsuario()) {
-            if (usuario.getApelido().equalsIgnoreCase(user.getApelido())) {
-                System.out.println("USUÁRIO JÁ CADASTRADO");
-                return;
-            }
         }
-        m.UserSignUp(user);
+        try {
+            m.UserSignUp(user);
+            saida.writeUTF("true");
+            saida.flush();
+        } catch (Exception e) {
+        }
     }
 }
