@@ -36,44 +36,6 @@ public class ServiceUsuarioContatos {
         db = SQLite.getIntance();
     }
 
-    public void createUsuario(UsuarioContatos usuarioContatos) {
-        db.conectar();
-        String sqlInsert = "INSERT INTO TB_USUARIO "
-                + "("
-                + "ID_USUARIO,"
-                + "ID_CONTATO"
-                + ") "
-                + "VALUES(?,?), (?,?);";
-
-        PreparedStatement preparedStatement = db.criarPreparedStatement(sqlInsert);
-        try {
-
-            preparedStatement.setInt(1, usuarioContatos.getIdUsuario());
-            preparedStatement.setInt(2, usuarioContatos.getIdContato());
-            preparedStatement.setInt(3, usuarioContatos.getIdContato());
-            preparedStatement.setInt(4, usuarioContatos.getIdUsuario());
-
-            int resultado = preparedStatement.executeUpdate();
-
-            if (resultado == 1) {
-                System.out.println("Contato inserido!");
-            } else {
-                System.out.println("Contato não inserido! =[");
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Contato não inserido! =[");
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException ex) {
-                }
-            }
-            db.desconectar();
-        }
-    }
-
     public List<Usuario> selectUserContacts(int id) throws SQLException {
         Connection conn = db.getConection();
         conn = DriverManager.getConnection("jdbc:sqlite:banco/banco_sqlite.db");
@@ -125,11 +87,39 @@ public class ServiceUsuarioContatos {
     public boolean addContact(int idUsuario, int idContato) {
         db.conectar();
         String sql = "INSERT INTO TB_USUARIO_CONTATO ("
-                + "ID_USUARIO, "
-                + "ID_CONTATO ) "
-                + "VALUES ("
-                + idUsuario + ", "
-                + idContato + " );";
+                        + "ID_USUARIO, "
+                        + "ID_CONTATO ) "
+                        + "VALUES ("
+                        + idUsuario + ", "
+                        + idContato + " ),("
+                        + idContato + ", " 
+                        + idUsuario + ");";
+        boolean conectou = false;
+        try {
+            conectou = db.conectar();
+
+            Statement stmt = db.criarStatement();
+
+            stmt.execute(sql);
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conectou) {
+                db.desconectar();
+            }
+        }
+    }
+    
+    public boolean removeContact(int idUsuario, int idContato) {
+        db.conectar();
+        String sql = "DELETE FROM TB_USUARIO_CONTATO "
+                + "WHERE "
+                + "ID_USUARIO = " + idUsuario
+                + " AND "
+                + "ID_CONTATO = " + idContato + ";";
         boolean conectou = false;
         try {
             conectou = db.conectar();

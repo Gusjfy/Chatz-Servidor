@@ -7,6 +7,7 @@ import Services.ConnectionSignUp;
 import Services.ConnectionStartNewChat;
 import Services.ConnectionUpdate;
 import Services.ConnectionAddContact;
+import Services.ConnectionRemoveContact;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -165,6 +166,14 @@ public class Controller extends Thread {
                         saida = new ObjectOutputStream(conn.getOutputStream());
                         connection.execute(u, saida);
                         System.out.println("ENVIOU OS CONTATOS");
+                        break;
+                    case 7: //Remover Contato    
+                        connection = new ConnectionRemoveContact();
+                        u = new Usuario();
+                        u.setId(entrada.readInt());
+                        u.setEmail(entrada.readUTF());
+                        saida = new ObjectOutputStream(conn.getOutputStream());
+                        connection.execute(u, saida);
                         break;
                 }
 
