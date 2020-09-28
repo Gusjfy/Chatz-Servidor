@@ -43,13 +43,15 @@ public class ServiceUsuarioContatos {
                 + "ID_USUARIO,"
                 + "ID_CONTATO"
                 + ") "
-                + "VALUES(?,?);";
+                + "VALUES(?,?), (?,?);";
 
         PreparedStatement preparedStatement = db.criarPreparedStatement(sqlInsert);
         try {
 
             preparedStatement.setInt(1, usuarioContatos.getIdUsuario());
             preparedStatement.setInt(2, usuarioContatos.getIdContato());
+            preparedStatement.setInt(3, usuarioContatos.getIdContato());
+            preparedStatement.setInt(4, usuarioContatos.getIdUsuario());
 
             int resultado = preparedStatement.executeUpdate();
 
@@ -77,7 +79,7 @@ public class ServiceUsuarioContatos {
         conn = DriverManager.getConnection("jdbc:sqlite:banco/banco_sqlite.db");
         String sql = "SELECT * "
                 + "FROM TB_USUARIO_CONTATO "
-                + "WHERE ID_USUARIO = "+id;
+                + "WHERE ID_USUARIO = " + id;
         ServiceUsuario service = ServiceUsuario.getIntance();
         List<Usuario> userList = new ArrayList<>();
         statement = conn.createStatement();
@@ -119,7 +121,7 @@ public class ServiceUsuarioContatos {
             }
         }
     }
-    
+
     public boolean addContact(int idUsuario, int idContato) {
         db.conectar();
         String sql = "INSERT INTO TB_USUARIO_CONTATO ("
